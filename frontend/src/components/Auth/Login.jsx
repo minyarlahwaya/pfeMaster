@@ -1,3 +1,4 @@
+
 import "./Auth.css";
 
 import {
@@ -105,10 +106,18 @@ function Login() {
 
 
             // ========================================
-            // REDIRECTION
+            // REDIRECTION SELON LE RÔLE
             // ========================================
 
-            navigate("/profile");
+            if (response.data.user.role === "admin") {
+
+                navigate("/admin");
+
+            } else {
+
+                navigate("/profile");
+
+            }
 
 
         }
@@ -238,7 +247,7 @@ function Login() {
                 <div className="auth-links">
 
 
-                    <a href="#">
+                    <a href="/forgot-password">
 
                         Mot de passe oublié ?
 
@@ -273,3 +282,4 @@ function Login() {
 
 
 export default Login;
+

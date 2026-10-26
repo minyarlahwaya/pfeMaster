@@ -5,6 +5,10 @@ const Vehicule = require("./VehiculeModel");
 const VehiculePneu = require("./VehiculePneuModel");
 const Commande = require("./Commande");
 const CommandeItem = require("./CommandeItem");
+const Promotion = require("./PromotionModel");
+const Facture = require("./FactureModel");
+const Avis = require("./AvisModel");
+const Reclamation = require("./ReclamationModel");
 
 
 // ========================================
@@ -86,6 +90,103 @@ CommandeItem.belongsTo(Pneu, {
 });
 
 
+
+
+
+
+// ========================================
+// Relation Pneu - Promotion
+// ========================================
+
+Pneu.hasMany(Promotion, {
+    foreignKey: "pneuId",
+    as: "promotions"
+});
+
+Promotion.belongsTo(Pneu, {
+    foreignKey: "pneuId",
+    as: "pneu"
+});
+
+
+
+
+// ========================================
+// Relation Commande - Facture
+// ========================================
+
+Commande.hasOne(Facture, {
+    foreignKey: "commandeId",
+    as: "facture",
+    onDelete: "CASCADE"
+});
+
+Facture.belongsTo(Commande, {
+    foreignKey: "commandeId",
+    as: "commande"
+});
+
+
+
+
+// Relation User - Avis//
+User.hasMany(Avis, {
+    foreignKey: "userId",
+    as: "avis"
+});
+
+Avis.belongsTo(User, {
+    foreignKey: "userId",
+    as: "user"
+});
+
+
+
+
+// ========================================
+// Relation Commande - Avis
+// ========================================
+
+// ========================================
+// Relation Commande - Avis
+// Une commande peut être associée à plusieurs avis
+// ========================================
+
+Commande.hasMany(Avis, {
+    foreignKey: "commandeId",
+    as: "avis"
+});
+
+Avis.belongsTo(Commande, {
+    foreignKey: "commandeId",
+    as: "commande"
+});
+
+Pneu.hasMany(Avis, {
+    foreignKey: "pneuId",
+    as: "avis"
+});
+
+Avis.belongsTo(Pneu, {
+    foreignKey: "pneuId",
+    as: "pneu"
+});
+
+
+// ========================================
+// Relation User - Reclamation
+// ========================================
+
+User.hasMany(Reclamation, {
+    foreignKey: "userId",
+    as: "reclamations",
+    onDelete: "CASCADE"
+});
+
+Reclamation.belongsTo(User, {
+    foreignKey: "userId",
+    as: "user"
+});
 // ========================================
 // Export
 // ========================================
@@ -97,5 +198,11 @@ module.exports = {
     Vehicule,
     VehiculePneu,
     Commande,
-    CommandeItem
+    CommandeItem,
+      Promotion,
+      Facture,
+       Avis,
+    Reclamation
 };
+
+

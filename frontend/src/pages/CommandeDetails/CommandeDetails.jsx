@@ -1,3 +1,4 @@
+
 import "./CommandeDetails.css";
 
 import { useParams, Link } from "react-router-dom";
@@ -12,7 +13,14 @@ import {
     FaShoppingBag
 } from "react-icons/fa";
 
-import { getCommandeById } from "../../services/commandeApi";
+import {
+    getCommandeById,
+    downloadFacturePDF
+} from "../../services/commandeApi";
+
+import { getAvisByCommande } from "../../services/avisApi";
+
+import AvisForm from "../../components/Avis/AvisForm";
 
 
 function CommandeDetails() {
@@ -22,6 +30,35 @@ function CommandeDetails() {
     const [commande, setCommande] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    //const [avis, setAvis] = useState(null);
+     const [avisParPneu, setAvisParPneu] = useState({});
+
+    // ========================================
+    // TÉLÉCHARGER LA FACTURE PDF
+    // ========================================
+
+    const handleDownloadFacture = async () => {
+
+        try {
+
+            await downloadFacturePDF(commande.id);
+
+        } catch (error) {
+
+            console.error(
+                "Erreur téléchargement facture :",
+                error
+            );
+
+            alert(
+                error.response?.data?.message ||
+                "Impossible de télécharger la facture."
+            );
+
+        }
+
+    };
 
 
     // ========================================
@@ -68,6 +105,65 @@ function CommandeDetails() {
         fetchCommande();
 
     }, [id]);
+
+
+    // ========================================
+    // RÉCUPÉRER L'AVIS EXISTANT
+    // ========================================
+
+    useEffect(() => {
+
+        const fetchAvis = async () => {
+
+            // Attendre que la commande soit chargée
+            if (!commande) {
+                return;
+            }
+
+            // Vérifier si le statut permet de laisser un avis
+            const statutAutorise =
+                commande.statut === "confirmée" ||
+                commande.statut === "expédiée" ||
+                commande.statut === "livrée";
+
+            // Si le statut ne permet pas encore de laisser un avis
+            if (!statutAutorise) {
+                return;
+            }
+
+            try {
+
+                const response =
+                    await getAvisByCommande(
+                        commande.id
+                    );
+
+                // Si un avis existe déjà
+                if (
+                    response.success &&
+                    response.existe
+                ) {
+
+                    setAvis(
+                        response.avis
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Erreur récupération avis :",
+                    error
+                );
+
+            }
+
+        };
+
+        fetchAvis();
+
+    }, [commande]);
 
 
     // ========================================
@@ -121,8 +217,11 @@ function CommandeDetails() {
                         to="/pneus"
                         className="commande-back-btn"
                     >
+
                         <FaArrowLeft />
+
                         Retour aux pneus
+
                     </Link>
 
                 </div>
@@ -133,6 +232,20 @@ function CommandeDetails() {
 
     }
 
+
+    // ========================================
+    // AVIS AUTORISÉ ?
+    // ========================================
+
+    const avisAutorise =
+        commande.statut === "confirmée" ||
+        commande.statut === "expédiée" ||
+        commande.statut === "livrée";
+
+
+    // ========================================
+    // AFFICHAGE
+    // ========================================
 
     return (
 
@@ -186,11 +299,14 @@ function CommandeDetails() {
                         </h1>
 
                         <p>
+
                             Merci pour votre commande,
+
                             <strong>
                                 {" "}
                                 {commande.prenom}
                             </strong>.
+
                         </p>
 
                         <span>
@@ -273,7 +389,7 @@ function CommandeDetails() {
                         </div>
 
                         <span>
-                            Livraison
+                            Récupération
                         </span>
 
                     </div>
@@ -295,7 +411,9 @@ function CommandeDetails() {
                     <div className="commande-main">
 
 
-                        {/* ARTICLES */}
+                        {/* ========================================
+                            ARTICLES
+                        ======================================== */}
 
                         <div className="commande-card">
 
@@ -312,8 +430,12 @@ function CommandeDetails() {
                                 </div>
 
                                 <span>
+
                                     {commande.items.length} article
-                                    {commande.items.length > 1 ? "s" : ""}
+                                    {commande.items.length > 1
+                                        ? "s"
+                                        : ""}
+
                                 </span>
 
                             </div>
@@ -333,10 +455,23 @@ function CommandeDetails() {
 
                                         <div className="commande-item-image">
 
-                                            <img
-                                                src={`http://localhost:5001/uploadPneu/${item.pneu.image}`}
-                                                alt={item.pneu.modele}
-                                            />
+                                            {item.pneu?.image ? (
+
+                                                <img
+                                                    src={`http://localhost:5001/uploadPneu/${item.pneu.image}`}
+                                                    alt={
+                                                        item.pneu?.modele ||
+                                                        "Pneu"
+                                                    }
+                                                />
+
+                                            ) : (
+
+                                                <div className="no-image">
+                                                    🛞
+                                                </div>
+
+                                            )}
 
                                         </div>
 
@@ -346,21 +481,46 @@ function CommandeDetails() {
                                         <div className="commande-item-info">
 
                                             <h3>
-                                                {item.pneu.modele}
+                                                {item.pneu?.modele ||
+                                                    "Pneu"}
                                             </h3>
 
+
+                                            {item.pneu?.marque?.nom && (
+
+                                                <span className="commande-marque">
+
+                                                    {item.pneu.marque.nom}
+
+                                                </span>
+
+                                            )}
+
+
                                             <p>
-                                                {item.pneu.dimension}
+
+                                                {item.pneu?.dimension ||
+                                                    "Dimension non renseignée"}
+
                                             </p>
 
-                                            <span>
-                                                Saison :{" "}
-                                                {item.pneu.saison}
-                                            </span>
 
                                             <span>
+
+                                                Saison :{" "}
+
+                                                {item.pneu?.saison ||
+                                                    "Non renseignée"}
+
+                                            </span>
+
+
+                                            <span>
+
                                                 Quantité :{" "}
+
                                                 {item.quantite}
+
                                             </span>
 
                                         </div>
@@ -370,15 +530,66 @@ function CommandeDetails() {
 
                                         <div className="commande-item-price">
 
-                                            <span>
-                                                {Number(item.prix).toFixed(2)} DT / unité
-                                            </span>
+                                            {Number(
+                                                item.pourcentagePromotion
+                                            ) > 0 ? (
 
-                                            <strong>
+                                                <>
+
+                                                    <span className="commande-original-price">
+
+                                                        {Number(
+                                                            item.prixOriginal
+                                                        ).toFixed(2)}{" "}
+                                                        DT / unité
+
+                                                    </span>
+
+
+                                                    <span className="commande-promotion">
+
+                                                        -
+                                                        {Number(
+                                                            item.pourcentagePromotion
+                                                        )}{" "}
+                                                        %
+
+                                                    </span>
+
+
+                                                    <strong className="commande-promo-price">
+
+                                                        {Number(
+                                                            item.prix
+                                                        ).toFixed(2)}{" "}
+                                                        DT / unité
+
+                                                    </strong>
+
+                                                </>
+
+                                            ) : (
+
+                                                <span className="commande-normal-price">
+
+                                                    {Number(
+                                                        item.prix
+                                                    ).toFixed(2)}{" "}
+                                                    DT / unité
+
+                                                </span>
+
+                                            )}
+
+
+                                            <strong className="commande-item-total">
+
                                                 {(
                                                     Number(item.prix) *
                                                     Number(item.quantite)
-                                                ).toFixed(2)} DT
+                                                ).toFixed(2)}{" "}
+                                                DT
+
                                             </strong>
 
                                         </div>
@@ -392,7 +603,9 @@ function CommandeDetails() {
                         </div>
 
 
-                        {/* INFORMATIONS CLIENT */}
+                        {/* ========================================
+                            INFORMATIONS CLIENT
+                        ======================================== */}
 
                         <div className="commande-card">
 
@@ -403,7 +616,7 @@ function CommandeDetails() {
                                     <FaMapMarkerAlt />
 
                                     <h2>
-                                        Adresse de livraison
+                                        Informations de récupération
                                     </h2>
 
                                 </div>
@@ -423,18 +636,25 @@ function CommandeDetails() {
                                 <div>
 
                                     <strong>
+
                                         {commande.prenom}{" "}
                                         {commande.nom}
+
                                     </strong>
+
 
                                     <p>
                                         {commande.adresse}
                                     </p>
 
+
                                     <p>
+
                                         {commande.codePostal}{" "}
                                         {commande.ville}
+
                                     </p>
+
 
                                     <p className="telephone">
 
@@ -450,6 +670,52 @@ function CommandeDetails() {
 
                         </div>
 
+
+                        {/* ========================================
+                            AVIS CLIENT
+                        ======================================== */}
+
+{/* AVIS CLIENT PAR PNEU */}
+{avisAutorise && (
+    <div className="commande-card">
+        <h2>Donnez votre avis sur vos pneus</h2>
+
+        {commande.items?.map((item) => {
+            const pneuId = item.pneuId ?? item.pneu?.id;
+
+            if (!pneuId) return null;
+
+            return (
+                <div key={item.id} className="avis-pneu-item">
+                    <h3>
+                        {item.pneu?.marque?.nom}{" "}
+                        {item.pneu?.modele}
+                    </h3>
+
+                    {avisParPneu[pneuId] ? (
+                        <p>
+                            ⭐ Merci ! Votre avis pour ce pneu
+                            a bien été enregistré.
+                        </p>
+                    ) : (
+                        <AvisForm
+                            key={`${commande.id}-${pneuId}`}
+                            commandeId={commande.id}
+                            pneuId={pneuId}
+                            onAvisAjoute={(nouvelAvis) => {
+                                setAvisParPneu((anciensAvis) => ({
+                                    ...anciensAvis,
+                                    [pneuId]: nouvelAvis
+                                }));
+                            }}
+                        />
+                    )}
+                </div>
+            );
+        })}
+    </div>
+)}
+
                     </div>
 
 
@@ -460,7 +726,9 @@ function CommandeDetails() {
                     <aside className="commande-sidebar">
 
 
-                        {/* RÉSUMÉ */}
+                        {/* ========================================
+                            RÉSUMÉ
+                        ======================================== */}
 
                         <div className="commande-summary-card">
 
@@ -482,7 +750,12 @@ function CommandeDetails() {
                                 </span>
 
                                 <strong>
-                                    {Number(commande.total).toFixed(2)} DT
+
+                                    {Number(
+                                        commande.total
+                                    ).toFixed(2)}{" "}
+                                    DT
+
                                 </strong>
 
                             </div>
@@ -491,11 +764,11 @@ function CommandeDetails() {
                             <div className="summary-line">
 
                                 <span>
-                                    Livraison
+                                    Récupération
                                 </span>
 
                                 <span className="summary-gray">
-                                    À déterminer
+                                    Sur place
                                 </span>
 
                             </div>
@@ -511,7 +784,12 @@ function CommandeDetails() {
                                 </span>
 
                                 <strong>
-                                    {Number(commande.total).toFixed(2)} DT
+
+                                    {Number(
+                                        commande.total
+                                    ).toFixed(2)}{" "}
+                                    DT
+
                                 </strong>
 
                             </div>
@@ -519,14 +797,35 @@ function CommandeDetails() {
 
                             <div className="summary-payment">
 
-                                Paiement à la livraison
+                                Paiement lors de la récupération
 
                             </div>
 
                         </div>
 
 
-                        {/* ACTIONS */}
+                        {/* ========================================
+                            FACTURE
+                        ======================================== */}
+
+                        {commande.statut === "confirmée" && (
+
+                            <button
+                                type="button"
+                                className="commande-facture-btn"
+                                onClick={handleDownloadFacture}
+                            >
+
+                                📄 Télécharger la facture PDF
+
+                            </button>
+
+                        )}
+
+
+                        {/* ========================================
+                            ACTIONS
+                        ======================================== */}
 
                         <Link
                             to="/pneus"
@@ -561,4 +860,6 @@ function CommandeDetails() {
 
 }
 
+
 export default CommandeDetails;
+

@@ -13,8 +13,7 @@ router.post("/" ,uploadFile.single("logo"),marqueController.addMarque
 
 
 // Récupérer toutes les marques
-router.get( "/", marqueController.getAllMarques
-);
+router.get( "/", marqueController.getAllMarques);
 
 
 // Récupérer une marque par id

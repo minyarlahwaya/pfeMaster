@@ -1,4 +1,4 @@
-import CataloguePneus from "../components/pneus/CataloguePneus";
+import CataloguePneus from "../components/Pneus/CataloguePneus";
 import Footer from "../components/Footer/Footer";
 
 

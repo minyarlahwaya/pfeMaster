@@ -45,3 +45,85 @@ export const updateProfile = (user) => {
     );
 
 };
+
+export const forgotPassword = (email) => {
+
+  return axios.post(
+    `${apiURL}/forgot-password`,
+    {
+      email
+    }
+  );
+
+};
+
+
+// ==============================
+// Vérifier le code de récupération
+// ==============================
+
+export const verifyResetCode = (email, code) => {
+
+  return axios.post(
+    `${apiURL}/verify-reset-code`,
+    {
+      email,
+      code
+    }
+  );
+
+};
+
+
+
+
+export const resetPassword = (
+  email,
+  code,
+  newPassword
+) => {
+
+  return axios.post(
+    `${apiURL}/reset-password`,
+    {
+      email,
+      code,
+      newPassword
+    }
+  );
+
+};
+
+
+
+
+// ==============================
+// ADMIN — Gestion des utilisateurs
+// ==============================
+
+// Afficher tous les utilisateurs
+export const getAllUsers = () => {
+  return axios.get(`${apiURL}/admin`, {
+    withCredentials: true,
+  });
+};
+
+
+// Activer / désactiver un utilisateur
+export const toggleUserStatus = (id) => {
+  return axios.put(
+    `${apiURL}/admin/${id}/status`,
+    {},
+    {
+      withCredentials: true,
+    }
+  );
+};
+
+
+// Supprimer un utilisateur
+export const deleteUser = (id) => {
+  return axios.delete(`${apiURL}/admin/${id}`, {
+    withCredentials: true,
+  });
+};

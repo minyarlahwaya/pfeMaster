@@ -1,11 +1,20 @@
+
 import "./Hero.css";
+import { useNavigate } from "react-router-dom";
 
 function Hero() {
+  const navigate = useNavigate();
+
+  const voirMarques = () => {
+    document.getElementById("nos-marques")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <section className="hero">
-
       <div className="hero-content">
-
         <h1>
           Des pneus de qualité
           <span> pour votre véhicule</span>
@@ -17,17 +26,23 @@ function Hero() {
         </p>
 
         <div className="hero-buttons">
-          <button className="btn-primary">
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => navigate("/pneus")}
+          >
             Acheter maintenant
           </button>
 
-          <button className="btn-secondary">
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={voirMarques}
+          >
             Voir les marques
           </button>
         </div>
-
       </div>
-
     </section>
   );
 }

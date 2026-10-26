@@ -6,6 +6,8 @@ const uploadFile = require("../middleware/uploadFile");
 //  /pneus  //
 
 router.post("/",uploadFile.single("image"), pneuController.addPneu);
+router.put("/:id", uploadFile.single("image"), pneuController.updatePneu);
+router.delete("/:id", pneuController.deletePneu);
 // Afficher pneus
 router.get("/getallpneus", pneuController.getAllPneus);
 router.get("/search/dimension",pneuController.searchPneusByDimension);

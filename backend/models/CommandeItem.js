@@ -25,10 +25,24 @@ const CommandeItem = sequelize.define(
             allowNull: false
         },
 
+        // Prix réellement payé
         prix: {
             type: DataTypes.FLOAT,
             allowNull: false
-        }
+        },
+
+        // Prix normal du pneu avant promotion
+        prixOriginal: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0
+},
+
+pourcentagePromotion: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0
+}
     },
     {
         tableName: "commande_items",

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { searchPneusBySaison } from "../../services/pneuApi";
 
-import PneuCard from "../../components/pneus/PneuCard";
+import PneuCard from "../../components/Pneus/PneuCard";
 
 
 function SearchResultsSaison() {

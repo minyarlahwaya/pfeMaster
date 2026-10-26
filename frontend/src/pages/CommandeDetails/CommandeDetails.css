@@ -215,7 +215,7 @@
 }
 
 
-.commande-card-header > div {
+.commande-card-header>div {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -702,4 +702,86 @@
         padding: 20px;
     }
 
+
+}
+ .commande-item-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.commande-original-price {
+    color: #888;
+    font-size: 14px;
+    text-decoration: line-through;
+}
+
+.commande-promotion {
+    display: inline-block;
+    background-color: #d71920;
+    color: white;
+    padding: 3px 7px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.commande-promo-price {
+    color: #d71920;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.commande-normal-price {
+    color: #222;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.commande-item-total {
+    margin-top: 4px;
+    color: #111;
+    font-size: 18px;
+    font-weight: 700;
+}
+ .commande-facture-btn { width: 100%;
+     padding: 14px 18px;
+      border: none; 
+      border-radius: 8px;
+       background: #d71920;
+        color: white; 
+        font-size: 15px; 
+        font-weight: 600; 
+        
+        cursor: pointer;
+         margin-bottom: 12px; 
+         transition: 0.3s; } 
+         .commande-facture-btn:hover { 
+            background: #b9151b;
+             transform: translateY(-1px); }
+
+
+
+             .avis-deja-ajoute {
+    text-align: center;
+    padding: 20px;
+}
+
+.avis-deja-ajoute h3 {
+    margin-bottom: 10px;
+    color: #222;
+}
+
+.avis-deja-ajoute p {
+    color: #666;
+}
+
+.avis-pneu-item {
+    padding: 20px 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.avis-pneu-item:last-child {
+    border-bottom: none;
 }

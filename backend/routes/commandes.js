@@ -5,6 +5,7 @@ const router = express.Router();
 const commandeController = require("../controllers/CommandeController");
 
 const requireAuth = require("../middleware/requireAuth");
+const requireAdmin = require("../middleware/requireAdmin");
 
 
 // ========================================
@@ -27,6 +28,15 @@ router.get(
     commandeController.getMesCommandes
 );
 
+
+
+router.get(
+    "/admin",
+    requireAdmin,
+    commandeController.getAllCommandesAdmin
+);
+
+
 // ========================================
 // UNE COMMANDE PAR ID
 // ========================================
@@ -35,6 +45,28 @@ router.get(
     "/:id",
     requireAuth,
     commandeController.getCommandeById
+);
+
+
+
+// ========================================
+// MODIFIER LE STATUT - ADMIN
+ //========================================
+
+router.put(
+    "/:id/statut",
+    requireAdmin,
+    commandeController.updateStatutCommande
+);
+
+// ========================================
+// SUPPRIMER UNE COMMANDE - ADMIN
+// ========================================
+
+router.delete(
+    "/:id",
+    requireAdmin,
+    commandeController.deleteCommande
 );
 
 

@@ -1,27 +1,31 @@
 import "./Brands.css";
 
 import michelin from "../../assets/images/Michelin.png"
-import continental from "../../assets/images/continental.png";
+//import continental from "../../assets/images/continental.png";
 import bridgestone from "../../assets/images/bridgestone.png";
 import goodyear from "../../assets/images/goodyear.png";
 import pirelli from "../../assets/images/pirelli.png";
 import hankook from "../../assets/images/hankook.png";
+import linglong from "../../assets/images/dunlop.png";
+import sailun from "../../assets/images/sailun.png";
+
 
 
 function Brands() {
 
   const brands = [
     michelin,
-    continental,
     bridgestone,
     goodyear,
     pirelli,
-    hankook
+    hankook,
+    linglong,
+    sailun
   ];
 
 
   return (
-    <section className="brands">
+    <section className="brands"   id="nos-marques">
 
       <h1>
         Les meilleures marques aux meilleurs prix

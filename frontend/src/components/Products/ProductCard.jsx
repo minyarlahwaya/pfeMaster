@@ -1,33 +1,80 @@
-import "./Products.css";
+
+import { useNavigate } from "react-router-dom";
+import { FaArrowRight } from "react-icons/fa";
 
 function ProductCard({ product }) {
+  const navigate = useNavigate();
+
+  const imageUrl = product.image
+    ? `http://localhost:5001/uploadPneu/${product.image}`
+    : null;
 
   return (
-    <div className="product-card">
+    <div
+      className="product-card"
+      onClick={() => navigate(`/pneu/${product.id}`)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          navigate(`/pneu/${product.id}`);
+        }
+      }}
+      role="link"
+      tabIndex={0}
+      aria-label={`Voir ${product.modele}`}
+    >
+      <div className="product-image-container">
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={`${product.marque?.nom || ""} ${product.modele}`}
+            className="product-image"
+            loading="lazy"
+          />
+        ) : (
+          <div className="product-no-image">
+            Image non disponible
+          </div>
+        )}
 
-      <img 
-        src={product.image} 
-        alt={product.name}
-      />
-
-      <h3>{product.name}</h3>
-
-      <p className="dimension">
-        {product.dimension}
-      </p>
-
-      <div className="rating">
-        ⭐⭐⭐⭐⭐
+        <span className="product-season">
+          {product.saison}
+        </span>
       </div>
 
-      <h4>
-        {product.price} DT
-      </h4>
+      <div className="product-info">
+        <p className="product-brand">
+          {product.marque?.nom || "Marque"}
+        </p>
 
-      <button>
-        Ajouter au panier
-      </button>
+        <h3>{product.modele}</h3>
 
+        <p className="product-dimension">
+          <span>Dimension</span>
+          <strong>{product.dimension}</strong>
+        </p>
+
+        <div className="product-card-footer">
+          <div>
+            <span className="product-price-label">Prix</span>
+            <h4>{Number(product.prix).toFixed(2)} DT</h4>
+          </div>
+
+          <span className="product-arrow" aria-hidden="true">
+            <FaArrowRight />
+          </span>
+        </div>
+
+        <p
+          className={`product-stock ${
+            product.stock > 0 ? "in-stock" : "out-stock"
+          }`}
+        >
+          <span className="stock-dot" />
+          {product.stock > 0
+            ? "Disponible"
+            : "Rupture de stock"}
+        </p>
+      </div>
     </div>
   );
 }

@@ -47,7 +47,10 @@ function CommandeDetailss() {
                 setCommande(
                     response.data.commande
                 );
-
+                    console.log(
+    "Articles de la commande :",
+    response.data.commande.items
+);
 
             } catch (error) {
 

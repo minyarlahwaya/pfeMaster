@@ -111,3 +111,19 @@
     }
 
 }
+
+
+.btn-reset-filtres {
+  margin-top: 12px;
+  padding: 9px 16px;
+  border: 1px solid #d62828;
+  border-radius: 6px;
+  background: white;
+  color: #d62828;
+}
+
+.aucun-pneu {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 30px;
+}

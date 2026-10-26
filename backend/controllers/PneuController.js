@@ -117,56 +117,51 @@ module.exports.getAllPneus = async (req, res) => {
 
     try {
 
-
         const pneus = await Pneu.findAll({
 
-            include:{
+            include: {
 
                 model: Marque,
 
-                as:"marque",
+                as: "marque",
 
-                attributes:[
+                attributes: [
                     "id",
                     "nom",
                     "logo"
                 ]
 
-            }
+            },
+
+            order: [["id", "ASC"]]
 
         });
 
 
-
         return res.status(200).json({
 
-            success:true,
+            success: true,
 
             pneus
 
         });
 
 
-
-    } catch(error){
-
+    } catch (error) {
 
         console.log(error);
 
-
         return res.status(500).json({
 
-            success:false,
+            success: false,
 
-            message:error.message
+            message: error.message
 
         });
-
 
     }
 
 };
-
 
 module.exports.getPneuById = async (req, res) => {
 
@@ -652,3 +647,167 @@ module.exports.searchPneusBySaison = async (req, res) => {
     }
 
 };
+
+
+
+// =================================
+// Modifier un pneu
+// =================================
+
+module.exports.updatePneu = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const {
+            modele,
+            dimension,
+            largeur,
+            hauteur,
+            diametre,
+            saison,
+            prix,
+            stock,
+            description,
+            marqueId
+        } = req.body;
+
+
+        // Vérifier si le pneu existe
+        const pneu = await Pneu.findByPk(id);
+
+        if (!pneu) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Pneu introuvable"
+            });
+
+        }
+
+
+        // Vérifier si la marque existe
+        const marque = await Marque.findByPk(marqueId);
+
+        if (!marque) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Cette marque n'existe pas"
+            });
+
+        }
+
+
+        // Préparer les données à modifier
+        const donnees = {
+            modele,
+            dimension,
+            largeur,
+            hauteur,
+            diametre,
+            saison,
+            prix,
+            stock,
+            description,
+            marqueId
+        };
+
+
+        // Si une nouvelle image est envoyée
+        if (req.file) {
+            donnees.image = req.file.filename;
+        }
+
+
+        // Mise à jour
+        await pneu.update(donnees);
+
+
+        return res.status(200).json({
+
+            success: true,
+
+            message: "Pneu modifié avec succès",
+
+            pneu
+
+        });
+
+
+    } catch (error) {
+
+        console.log(error);
+
+        return res.status(500).json({
+
+            success: false,
+
+            message: error.message
+
+        });
+
+    }
+
+};
+
+
+
+
+// =================================
+// Supprimer un pneu
+// =================================
+
+module.exports.deletePneu = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+
+        // Vérifier si le pneu existe
+        const pneu = await Pneu.findByPk(id);
+
+        if (!pneu) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message: "Pneu introuvable"
+
+            });
+
+        }
+
+
+        // Supprimer le pneu
+        await pneu.destroy();
+
+
+        return res.status(200).json({
+
+            success: true,
+
+            message: "Pneu supprimé avec succès"
+
+        });
+
+
+    } catch (error) {
+
+        console.log(error);
+
+        return res.status(500).json({
+
+            success: false,
+
+            message: error.message
+
+        });
+
+    }
+
+};
+

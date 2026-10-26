@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { searchPneusByMarque } from "../../services/marqueApi";
 
-import PneuCard from "../../components/pneus/PneuCard";
+import PneuCard from "../../components/Pneus/PneuCard";
 
 
 function SearchResultsMarque() {

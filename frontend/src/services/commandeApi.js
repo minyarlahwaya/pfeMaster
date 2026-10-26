@@ -40,3 +40,84 @@ export const getCommandeById = (id) => {
     );
 
 };
+
+
+
+export const getAllCommandesAdmin = () => {
+
+    return axios.get(
+        `${apiURL}/admin`,
+        {
+            withCredentials: true
+        }
+    );
+
+};
+
+export const updateStatutCommande = (id, statut) => {
+
+    return axios.put(
+        `${apiURL}/${id}/statut`,
+        {
+            statut
+        },
+        {
+            withCredentials: true
+        }
+    );
+
+};
+
+
+export const deleteCommande = (id) => {
+
+    return axios.delete(
+        `${apiURL}/${id}`,
+        {
+            withCredentials: true
+        }
+    );
+
+};
+
+
+
+
+
+// ==============================
+// TÉLÉCHARGER LA FACTURE PDF
+// ==============================
+
+export const downloadFacturePDF = async (commandeId) => {
+
+    const response = await axios.get(
+        `http://localhost:5001/factures/commande/${commandeId}/pdf`,
+        {
+            withCredentials: true,
+            responseType: "blob"
+        }
+    );
+
+    const blob = new Blob(
+        [response.data],
+        {
+            type: "application/pdf"
+        }
+    );
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+
+    link.download = `facture-commande-${commandeId}.pdf`;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+};

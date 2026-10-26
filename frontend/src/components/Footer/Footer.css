@@ -196,3 +196,55 @@
 
 
 }
+
+.footer-box ul li a,
+.footer-box p a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-box ul li a:hover,
+.footer-box p a:hover {
+  color: #d71920;
+}
+
+.social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #d71920;
+}
+
+
+
+/* Localisation Google Maps */
+.footer-address {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-address svg {
+  color: #d71920;
+  flex-shrink: 0;
+}
+
+.location-link {
+  color: #ccc;
+  font-size: 14px;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.location-link:hover {
+  color: #d71920;
+}

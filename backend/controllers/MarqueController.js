@@ -63,41 +63,22 @@ module.exports.addMarque = async (req, res) => {
 // Récupérer toutes les marques
 // =================================
 
-module.exports.getAllMarques = async (req,res)=>{
-
-
-    try{
-
-
-        const marques = await Marque.findAll();
-
-
+module.exports.getAllMarques = async (req, res) => {
+    try {
+        const marques = await Marque.findAll({
+            order: [["id", "ASC"]]
+        });
 
         return res.status(200).json({
-
-            success:true,
-
+            success: true,
             marques
-
         });
-
-
-
-    }catch(error){
-
-
+    } catch (error) {
         return res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
+            success: false,
+            message: error.message
         });
-
-
     }
-
-
 };
 
 
