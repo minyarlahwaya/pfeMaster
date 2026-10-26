@@ -307,7 +307,7 @@
 
 .admin-welcome-card h2 {
     margin-top: 0;
-
+     color: #0a0909;
     font-size: 22px;
 }
 
@@ -353,12 +353,36 @@
     transition: all 0.2s ease;
 }
 
+
+/* ACTIONS RAPIDES */
+
+.admin-quick-actions button {
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #222222;
+
+    padding: 12px 18px;
+    border-radius: 6px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
 .admin-quick-actions button:hover {
-    background: #e30613;
+    background: #f1f1f1;
+    border-color: #bdbdbd;
+    color: #222222;
+}
 
-    border-color: #e30613;
-
-    color: white;
+.admin-quick-actions button svg {
+    color: #e30613;
 }
 
 

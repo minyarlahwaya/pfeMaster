@@ -16,7 +16,8 @@ var app = express();
 // =====================================================
 // IMPORT DES ROUTES
 // =====================================================
-
+const telegramRoutes = require("./routes/telegramRoutes");
+const { demarrerTelegramPolling } = require("./services/telegramPolling");
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var pneuRoutes = require("./routes/pneuRoutes");
@@ -94,6 +95,7 @@ app.use("/chatbot", chatbotRoutes);
 app.use("/factures", factureRoutes);
 app.use("/avis", avisRoutes);
 app.use("/reclamations", reclamationRouter);
+app.use("/telegram", telegramRoutes);
 
 
 // =====================================================
@@ -133,7 +135,7 @@ sequelize
 // ROUTE 404
 // =====================================================
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
 
     next(createError(404));
 
@@ -144,7 +146,7 @@ app.use(function(req, res, next) {
 // GESTION DES ERREURS
 // =====================================================
 
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
 
     res.status(err.status || 500).json({
 
@@ -164,7 +166,7 @@ app.use(function(err, req, res, next) {
 const server = http.createServer(app);
 
 server.listen(5001, () => {
-
     console.log("🚀 App is running on port 5001");
 
+    demarrerTelegramPolling();
 });

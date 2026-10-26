@@ -162,6 +162,7 @@ exports.getAllReclamations = async (req, res) => {
 // 4. Modifier le statut et répondre (admin)
 // ========================================
 
+
 exports.updateReclamation = async (req, res) => {
     try {
         const { id } = req.params;
@@ -182,17 +183,55 @@ exports.updateReclamation = async (req, res) => {
             "Résolue"
         ];
 
-        if (statut && !statutsAutorises.includes(statut)) {
+        if (
+            statut !== undefined &&
+            !statutsAutorises.includes(statut)
+        ) {
             return res.status(400).json({
                 success: false,
                 message: "Statut invalide."
             });
         }
 
+        // Mémoriser les anciennes valeurs avant la modification
+        const ancienStatut = reclamation.statut;
+        const ancienneReponse = reclamation.reponseAdmin;
+
+        const statutChange =
+            statut !== undefined && statut !== ancienStatut;
+
+        const reponseChange =
+            reponseAdmin !== undefined &&
+            reponseAdmin !== ancienneReponse;
+
+        // Récupérer le client
+        const user = await User.findByPk(reclamation.userId);
+
+        // Mettre à jour la réclamation
         await reclamation.update({
             ...(statut !== undefined && { statut }),
             ...(reponseAdmin !== undefined && { reponseAdmin })
         });
+
+        // Notification uniquement si le statut ou la réponse change
+        if (user && (statutChange || reponseChange)) {
+            const messageTelegram =
+                `🔔 MISE À JOUR DE VOTRE RÉCLAMATION - LANDOLSI TIRES\n\n` +
+                `🆔 Réclamation n° : ${reclamation.id}\n` +
+                `👤 Client : ${user.prenom} ${user.nom}\n` +
+                `📌 Sujet : ${reclamation.sujet}\n` +
+                `📊 Statut : ${reclamation.statut}\n` +
+                `💬 Réponse de l'administration : ${reclamation.reponseAdmin || "Aucune réponse pour le moment."}`;
+
+            try {
+                await envoyerNotificationTelegram(messageTelegram);
+            } catch (telegramError) {
+                console.error(
+                    "Erreur notification Telegram mise à jour réclamation :",
+                    telegramError.message
+                );
+            }
+        }
 
         return res.status(200).json({
             success: true,

@@ -30,4 +30,38 @@ async function envoyerNotificationTelegram(message) {
     }
 }
 
-module.exports = { envoyerNotificationTelegram };
+
+
+
+
+async function envoyerReponseTelegram(chatId, texte) {
+    try {
+        const token = process.env.TELEGRAM_BOT_TOKEN;
+
+        if (!token) {
+            throw new Error("TELEGRAM_BOT_TOKEN manquant dans .env");
+        }
+
+        const axios = require("axios");
+
+        const response = await axios.post(
+            `https://api.telegram.org/bot${token}/sendMessage`,
+            {
+                chat_id: chatId,
+                text: texte
+            }
+        );
+
+        console.log("✅ Réponse envoyée sur Telegram.");
+        return response.data;
+
+    } catch (error) {
+        console.error(
+            "❌ Erreur envoi Telegram :",
+            error.response?.data || error.message
+        );
+        throw error;
+    }
+}
+
+module.exports = { envoyerNotificationTelegram,envoyerReponseTelegram, };
